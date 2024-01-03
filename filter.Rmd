@@ -1,0 +1,264 @@
+---
+title: "RESULTS MSC"
+author: "Jupiter"
+output: pdf_document
+---
+
+```{r}
+variants <- read.delim(file="/media/jupiter/marina/project-msbt/final.txt", header = TRUE,sep = "\t", stringsAsFactors=FALSE)
+head(variants)
+id <- read.delim(file="/media/jupiter/marina/project-msbt/sample_id", header = FALSE,col.names = "Sample_ID")
+head(id)
+nrow(variants)==nrow(id) 
+variants$Sample_ID <- id$Sample_ID
+head(variants)
+unq <- levels(id$Sample_ID) # samples found with variant
+length(unq) # total number of samples with variants
+
+syn <- variants[variants$ANNOTATION != "synonymous_variant", ] # filters out the synoymous mutations
+head(syn)
+
+variants <- syn[syn$ANNOTATION!="intragenic_variant", ] # filters out gene 223 ??
+nrow(variants)
+
+# types of variants identified 
+
+
+```
+
+A total of `r length(unq)` have been found to have variants in one or more genes
+
+
+A total of `r nrow(variants)` have been identified in all genes. These are the raw results without filter
+
+## *Types of variants identified*  
+These variants  
+`r levels(variants$VariantTYPE)` have been identified in the raw unfiltered data  
+complex,mnp will be filtered out leaving only snp,del,ins.
+```{r}
+library(dplyr)
+```
+
+
+```{r}
+levels(variants$VariantTYPE)
+target <- c("snp","del","ins")
+filter <- (variants$VariantTYPE %in% target)
+variants <- variants[filter, ]
+
+filter <- which(variants$ANNOTATION=="conservative_inframe_deletion")
+
+
+filter<- c(filter, which(variants$ANNOTATION=="conservative_inframe_insertion"))
+
+filter<- c(filter, which(variants$ANNOTATION=="splice_region_variant&stop_retained_variant"))
+variants <- variants[-filter, ]
+
+nrow(variants)
+
+ind <- seq(nrow(variants))
+for (i in ind) {
+  if (variants$ANNOTATION[i]=="stop_lost&splice_region_variant"){
+    
+    variants$ANNOTATION[i] <- "stop_lost"
+    
+  }
+}
+
+
+
+#length(which(filter))
+
+```
+After filtering out complex variants, i remained with `r nrow(variants)` variants in all genes 
+
+```{r}
+
+atpe <- variants$GENE=="atpE"
+atpe2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+atpe1 <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+There are  `r total` total variants  in the atpE gene. Of these, `r length(atpe)` are unique variants, mutation p.Phe53Leu appeared twice
+```{r}
+atpe <- variants$GENE=="Rv0678"
+Rv06782 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+Rv0678 <- distinct(atpe,AAchange, .keep_all = TRUE)
+nrow(atpe)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+
+write.table(variants, file="/media/jupiter/marina/project-msbt/final-results.csv", sep= "\t", quote = FALSE) 
+  
+
+
+
+
+```
+There are  `r total` total variants  in the Rv0678 gene. Of these, `r length(atpe)` are unique variants, mutation p.Arg105His appeared six times while mutations p.Pro129Gln and  p.Gly41Val appeared three times
+
+```{r}
+atpe <- variants$GENE=="pepQ"
+pepQ2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+pepQ <- distinct(atpe,AAchange, .keep_all = TRUE)
+nrow(atpe)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+There are  `r total` total variants  in the pepQ gene. Of these, `r length(atpe)` are unique variants
+
+
+
+```{r}
+
+atpe <- variants$GENE=="Rv1979c"
+Rv1979c2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+Rv1979c <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+```{r}
+bdq <- rbind(atpe1,Rv0678,pepQ,Rv1979c)
+write.table(bdq, file="/media/jupiter/marina/project-msbt/bdq.txt", quote = FALSE, sep = "\t")
+
+
+```
+
+```{r}
+
+unique(variants$ANNOTATION)
+#levels(variants$ANNOTATION)
+```
+
+
+```{r}
+table(variants$ANNOTATION)
+```
+
+```{r}
+atpe <- variants$GENE=="ddn"
+ddn2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+ddn <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+```{r}
+atpe <- variants$GENE=="fbiA"
+fbiA2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+fbiA <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+```{r}
+atpe <- variants$GENE=="fbiB"
+fbiB2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+fbiB <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+```{r}
+atpe <- variants$GENE=="fbiC"
+fbiC2 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+fbiC <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+```{r}
+atpe <- variants$GENE=="Rv2983"
+Rv29832 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+Rv2983 <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+```{r}
+atpe <- variants$GENE=="fgd1"
+fgd12 <- variants[atpe, ]
+atpe <- variants[atpe, ]
+total <- nrow(atpe)
+print(total)
+atpe$AAchange <- as.character(atpe$AAchange)
+fgd1 <- distinct(atpe,AAchange, .keep_all = TRUE)
+table(atpe$AAchange)
+atpe <- levels(as.factor(atpe$AAchange))
+length(atpe)
+```
+
+
+```{r}
+dlm <- rbind(fbiA,fbiB,fbiC,Rv2983,fgd1,ddn)
+write.table(dlm, file="/media/jupiter/marina/project-msbt/dlm.txt", quote = FALSE, sep = "\t")
+```
+
+
+```{r}
+fresults <- read.csv2(file="/media/jupiter/marina/project-msbt/final-results.csv", header = TRUE, sep="\t")
+
+resistant <- c("TN106506","TN106458","TN106541","TN106437","TN106558","TN106497","TN106838","TN106655","TN106712","TN106961","TN106955","TN106719","TN106887","TN106689","TN106697","TN106563","TN106684","TN106584","TN106994","TN106993","TN106975","TN107018","TN106907")
+
+list <- character()
+for (i in seq(1:nrow(fresults))){
+  if (fresults[i,7] %in% resistant){
+    list[i] <- "resistant"
+  }
+    else {
+      list[i] <- "susceptible"
+    }
+    
+}
+
+
+fresults$Resistance <- list
+```
+
