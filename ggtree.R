@@ -38,13 +38,6 @@ ggsave(file="/media/jupiter/Marina/wilson/phylogeny-R/circular-lineage.png", wid
 
 
 
-
-
-
-
-
-
-
   
 ggtree(tree3, branch.length = "none", layout="circular") %<+% meta +
   aes(color=Region) + ggtitle("phylogenetic tree showing case distrubution per region")
@@ -126,12 +119,6 @@ h1 <-  gheatmap(p, lineage,                                 # we add a heatmap l
         legend.box = "vertical", legend.margin = margin())
 
 h1
-
-
-
-
-
-
 
 
 
