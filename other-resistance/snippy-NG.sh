@@ -6,7 +6,6 @@
 #SBATCH --output=./%J_NeisseriaG
 #SBATCH --error=./%J_NeisseriaG.err
 
-
 path="/etc/ace-data/home/jkabahita/NG/results"
 
 results="/etc/ace-data/home/jkabahita/NG/results"
